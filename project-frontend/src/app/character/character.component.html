@@ -1,1 +1,44 @@
-<p>character works!</p>
+<mat-toolbar color="primary">
+  <span>Filters</span>
+  <button mat-button [matMenuTriggerFor]="series_filter">Series</button>
+  <mat-menu #filter="matMenu">
+    <button mat-menu-item [matMenuTriggerFor]="series_filter">Series</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+  <mat-menu #series_filter="matMenu">
+    <span mat-menu-item *ngFor="let series of allSeries">
+      <mat-checkbox [checked]="selectedSeries.has(series)" (change)="toggleSeries(series)">
+        {{ series }}
+      </mat-checkbox>
+    </span>
+  </mat-menu>
+
+
+  <span class="spacer"></span>
+
+</mat-toolbar>
+
+
+<div class="card-container">
+  <mat-card *ngFor="let character of filteredCharacters(); let i = index" class="character-card">
+    <mat-card-header>
+      <mat-card-title>{{ character.name }}</mat-card-title>
+      <mat-card-subtitle>{{ character.series }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Age: {{ character.age }}</p>
+      <p>Height: {{ character.height }} cm</p>
+      <p>Weight: {{ character.weight }} kg</p>
+      <p>Species: {{ character.species }}</p>
+      <p>Gender: {{ character.gender }}</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button color="warn" (click)="deleteCharacter(i)">Delete</button>
+      <button mat-button (click)="editCharacter(i, 'name', prompt('New name:', character.name))">Edit</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+<button mat-fab color="primary" class="floating-btn" (click)="addCharacter()">
+  <mat-icon>add</mat-icon>
+</button>

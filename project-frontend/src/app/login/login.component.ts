@@ -32,4 +32,8 @@ export class LoginComponent {
     );
   }
 
+  onReset() {
+    this.username = "";
+    this.password = "";
+  }
 }
