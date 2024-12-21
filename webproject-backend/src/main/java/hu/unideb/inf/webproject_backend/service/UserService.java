@@ -1,4 +1,10 @@
 package hu.unideb.inf.webproject_backend.service;
 
-public class UserService {
+import hu.unideb.inf.webproject_backend.service.dto.UserDto;
+
+import java.util.List;
+
+public interface UserService {
+
+    List<UserDto> findAll();
 }

@@ -31,24 +31,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String userEmail;
+        final String username;
         if(StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader,"Bearer ")){
             filterChain.doFilter(request, response);
-            return ;
+            return;
         }
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
-        //felhasználónév nem üres, és még nincs bejelentkezve
-        if (StringUtils.isNotEmpty(userEmail)
+        username = jwtService.extractUsername(jwt);
+        if (StringUtils.isNotEmpty(username)
                 && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails felhasznalo = userDetailsService.loadUserByUsername(userEmail);
+            UserDetails user = userDetailsService.loadUserByUsername(username);
 
-            if(jwtService.validateToken(jwt, felhasznalo)){
+            if(jwtService.validateToken(jwt, user)){
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        felhasznalo,
+                        user,
                         null,
-                        felhasznalo.getAuthorities());
+                        user.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 context.setAuthentication(authToken);

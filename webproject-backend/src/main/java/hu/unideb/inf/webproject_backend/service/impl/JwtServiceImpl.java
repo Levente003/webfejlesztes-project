@@ -26,9 +26,9 @@ public class JwtServiceImpl implements JwtService {
         Map<String, Object> extraClaims = new HashMap<>();
         userDetails.getAuthorities().forEach(authority -> extraClaims.put(authority.getAuthority(), authority));
 
-        return Jwts.builder().claims(extraClaims).subject(userDetails.getUsername())
+        return Jwts.builder()
+                .claims(extraClaims).subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+300000))
                 .signWith(getKey())
                 .compact();
     }
@@ -36,11 +36,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
-    }
-
-    private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
+        return username.equals(userDetails.getUsername());
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

@@ -10,18 +10,5 @@ import java.util.List;
 public interface CharacterRepository extends JpaRepository<CharacterEntity, Long> {
     CharacterEntity findById(long id);
 
-    //FILTER
-    List<CharacterEntity> findBySeries(String series);
-
-    List<CharacterEntity> findByAgeBetween(int min, int max);
-
-    List<CharacterEntity> findByGender(String gender);
-
-    //SORTING
-    List<CharacterEntity> findAllByOrderByNameAsc();
-
-    List<CharacterEntity> findAllByOrderBySeriesAsc();
-
-    //SIMPLE GET ALL
     List<CharacterEntity> findAll();
 }

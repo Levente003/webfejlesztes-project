@@ -1,9 +1,6 @@
 package hu.unideb.inf.webproject_backend.data.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +11,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "Users")
-@NoArgsConstructor
-@Getter
-@Setter
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,6 +26,26 @@ public class UserEntity implements UserDetails {
     public UserEntity(String username, String password, RoleEnum role) {
         this.username = username;
         this.password = password;
+        this.role = role;
+    }
+
+    public UserEntity() {
+
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public RoleEnum getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 

@@ -1,46 +1,29 @@
 package hu.unideb.inf.webproject_backend.data.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Table(name = "Characters")
-@Getter
-@Setter
-@NoArgsConstructor
+@Table(name = "Characters", uniqueConstraints = {@UniqueConstraint(columnNames = {"series", "name"})})
 public class CharacterEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+    private long id;
     @Column
     private String series;
-
     @Column
     private String name;
-
     @Column
     private String species;
-
     @Column
     private String gender;
-
     @Column
     private int age;
-
     @Column
     private double height;
-
     @Column
     private double weight;
 
-    @Column
-    private String other; //JSON
-
-    public CharacterEntity(String series, String name, String species, String gender, int age, double height, double weight, String other) {
+    public CharacterEntity(String series, String name, String species, String gender, int age, double height, double weight) {
         this.series = series;
         this.name = name;
         this.species = species;
@@ -48,7 +31,72 @@ public class CharacterEntity {
         this.age = age;
         this.height = height;
         this.weight = weight;
-        this.other = other;
     }
 
+    public CharacterEntity() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getSeries() {
+        return series;
+    }
+
+    public void setSeries(String series) {
+        this.series = series;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(String species) {
+        this.species = species;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
 }

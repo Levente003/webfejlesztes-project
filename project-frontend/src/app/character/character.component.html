@@ -1,29 +1,101 @@
 <mat-toolbar color="primary">
-  <span>Filters</span>
-  <button mat-button [matMenuTriggerFor]="series_filter">Series</button>
-  <mat-menu #filter="matMenu">
-    <button mat-menu-item [matMenuTriggerFor]="series_filter">Series</button>
-    <button mat-menu-item>Item 2</button>
-  </mat-menu>
-  <mat-menu #series_filter="matMenu">
-    <span mat-menu-item *ngFor="let series of allSeries">
-      <mat-checkbox [checked]="selectedSeries.has(series)" (change)="toggleSeries(series)">
-        {{ series }}
-      </mat-checkbox>
-    </span>
-  </mat-menu>
-
-
+  <span>Characters</span>
   <span class="spacer"></span>
-
+  <button mat-icon-button color="accent" (click)="logout()" matRipple [matRippleCentered]="true">
+    <mat-icon>logout</mat-icon>
+  </button>
 </mat-toolbar>
 
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Filter Options</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="filters-container">
+      <div class="range-filters">
+        <div class="filter-item">
+          <div>
+            <label>Age</label>
+          </div>
+          <mat-slider [min]="minAge || 0" [max]="maxAge || 10" step="1" discrete>
+            <input [(ngModel)]="filters.ageRange[0]" matSliderStartThumb>
+            <input [(ngModel)]="filters.ageRange[1]" matSliderEndThumb>
+          </mat-slider>
+        </div>
+        <div class="filter-item">
+          <div>
+            <label>Height</label>
+          </div>
+          <mat-slider [min]="minHeight || 0" [max]="maxHeight || 10" step="1" discrete>
+            <input [(ngModel)]="filters.heightRange[0]" matSliderStartThumb>
+            <input [(ngModel)]="filters.heightRange[1]" matSliderEndThumb>
+          </mat-slider>
+        </div>
+        <div class="filter-item">
+          <div>
+            <label>Weight</label>
+          </div>
+          <mat-slider [min]="minWeight || 0" [max]="maxWeight || 10" step="0.01" discrete>
+            <input [(ngModel)]="filters.weightRange[0]" matSliderStartThumb>
+            <input [(ngModel)]="filters.weightRange[1]" matSliderEndThumb>
+          </mat-slider>
+        </div>
+      </div>
+      <div class="category-filters">
+        <div class="filter-item">
+          <div>
+            <label>Series</label>
+          </div>
+          <div *ngFor="let series of allSeries">
+            <mat-checkbox (change)="toggleFilter(filters.selectedSeries, series)">
+              {{ series }}
+            </mat-checkbox>
+          </div>
+        </div>
+        <div class="filter-item">
+          <div>
+            <label>Gender</label>
+          </div>
+          <div *ngFor="let gender of allGenders">
+            <mat-checkbox (change)="toggleFilter(filters.selectedGender, gender)">
+              {{ gender }}
+            </mat-checkbox>
+          </div>
+        </div>
+        <div class="filter-item">
+          <div>
+            <label>Species</label>
+          </div>
+          <div *ngFor="let species of allSpecies">
+            <mat-checkbox (change)="toggleFilter(filters.selectedSpecies, species)">
+              {{ species }}
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<mat-card appearance="outlined" class>
+  <mat-card-header>
+    <mat-card-title>Sorting</mat-card-title>
+  </mat-card-header>
+  <div class="sorting-options">
+    <mat-select [(value)]="sortKey">
+      <mat-option *ngFor="let option of sortKeyOptions" [value]="option">
+        {{ capitalise(option) }}
+      </mat-option>
+    </mat-select>
+    <mat-slide-toggle [(ngModel)]="isAscending">{{sortOrder}}</mat-slide-toggle>
+  </div>
+</mat-card>
 
 <div class="card-container">
   <mat-card *ngFor="let character of filteredCharacters(); let i = index" class="character-card">
-    <mat-card-header>
+    <mat-card-header style="background-color: rgb(63,80,179); color: rgb(253,63,128)">
       <mat-card-title>{{ character.name }}</mat-card-title>
-      <mat-card-subtitle>{{ character.series }}</mat-card-subtitle>
+      <mat-card-subtitle style="color: rgba(255,255,255,0.7); padding-bottom: .5em">{{ character.series }}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <p>Age: {{ character.age }}</p>
@@ -32,13 +104,18 @@
       <p>Species: {{ character.species }}</p>
       <p>Gender: {{ character.gender }}</p>
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-button color="warn" (click)="deleteCharacter(i)">Delete</button>
-      <button mat-button (click)="editCharacter(i, 'name', prompt('New name:', character.name))">Edit</button>
+    <mat-card-actions *ngIf="isAdmin">
+      <button mat-button color="primary" (click)="openEditDialog(character)">Edit</button>
+      <button mat-button color="warn" (click)="confirmDelete(character)">Delete</button>
     </mat-card-actions>
   </mat-card>
 </div>
 
-<button mat-fab color="primary" class="floating-btn" (click)="addCharacter()">
-  <mat-icon>add</mat-icon>
-</button>
+<div class="floating-btn-container">
+  <button *ngIf="isAdmin" mat-fab color="primary" class="floating-btn" (click)="openAddDialog()" matRipple [matRippleCentered]="true">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button mat-fab color="accent" class="floating-btn" (click)="reloadCharacters()" matRipple [matRippleCentered]="true">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
